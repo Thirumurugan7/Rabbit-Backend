@@ -7,16 +7,32 @@ const generateToken = (id) => {
 };
 
 
+
+exports.checKUser = async (req, res) => {
+  console.log("called");
+  const {email} = req.body;
+  console.log(email,"mail");
+  const user = await User.findOne({ email });
+if(user){
+  return res.status(200).json({ message: 'User already exists' });
+
+}
+else{
+  return res.status(201).json({ message: 'User not exists' });
+
+}};
+
+
 exports.signup = async (req, res) => {
   try {
-    const { name, dateOfBirth, gender, email, password, favoriteHabits } = req.body;
+    const { name, dateOfBirth, gender, email, address, favoriteHabits } = req.body;
     const userExists = await User.findOne({ email });
 
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    const newUser = new User({ name, dateOfBirth, gender, email, password, favoriteHabits });
+    const newUser = new User({ name, dateOfBirth, gender, email, address, favoriteHabits });
     await newUser.save();
 
     res.status(201).json({
@@ -24,12 +40,12 @@ exports.signup = async (req, res) => {
       name: newUser.name,
       email: newUser.email,
       token: generateToken(newUser._id),
+      address:newUser.address
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
-
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -56,3 +72,4 @@ exports.getFavoriteHabits = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
