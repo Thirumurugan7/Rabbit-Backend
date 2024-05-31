@@ -7,12 +7,12 @@ const UserSchema = new Schema({
   gender: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   address: { type: String, required: true },
-  favoriteHabits: { 
+  favoriteHabit: [{ 
     name: { type: String, required: true },
     decidedFrequency: { type: Number, required: true },
     currentProgress: { type: Number, required: true },
     streak: { type: Number, required: true }
-  }
+  }]
 });
 
 UserSchema.pre('save', async function (next) {

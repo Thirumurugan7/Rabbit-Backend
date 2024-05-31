@@ -8,4 +8,6 @@ router.post('/login', userController.login);
 router.get('/:userId/habits', protect, userController.getFavoriteHabits);
 router.post("/check",userController.checKUser)
 
+router.post("/update", userController.updateHabitProgress)
+
 module.exports = router;

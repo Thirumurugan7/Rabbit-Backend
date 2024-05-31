@@ -26,13 +26,14 @@ else{
 exports.signup = async (req, res) => {
   try {
     const { name, dateOfBirth, gender, email, address, favoriteHabits } = req.body;
+    console.log(name, dateOfBirth, gender, email, address, favoriteHabits);
     const userExists = await User.findOne({ email });
 
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    const newUser = new User({ name, dateOfBirth, gender, email, address, favoriteHabits });
+    const newUser = new User({ name, dateOfBirth, gender, email, address, favoriteHabit:favoriteHabits });
     await newUser.save();
 
     res.status(201).json({
@@ -47,20 +48,23 @@ exports.signup = async (req, res) => {
   }
 };
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email } = req.body;
 
   const user = await User.findOne({ email });
 
-  if (user && (await user.matchPassword(password))) {
-    res.json({
+  if (user) {
+    return res.status(200).json({
       _id: user._id,
       name: user.name,
       email: user.email,
+      
+      habits: user.favoriteHabit,
       token: generateToken(user._id),
     });
   } else {
-    res.status(401).json({ message: 'Invalid email or password' });
+    return res.status(201).json({ message: 'Invalid email or password' });
   }
+  
 };
 
 exports.getFavoriteHabits = async (req, res) => {
@@ -68,6 +72,30 @@ exports.getFavoriteHabits = async (req, res) => {
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
     res.json(user.favoriteHabits);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.updateHabitProgress = async (req, res) => {
+  const { habitId, email, name } = req.body;
+console.log( habitId, email,name);
+  try {
+    const user = await User.findOne({ email });
+    console.log(user.favoriteHabit);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    const result = await User.updateOne(
+      { email: email, 'favoriteHabit.name': name },
+      { $inc: { 'favoriteHabit.$.streak': 1, 'favoriteHabit.$.currentProgress': 1 } }
+    );
+
+    console.log(result);
+
+
+
+
+
+    res.status(200).json({ message: 'Habit progress updated successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
