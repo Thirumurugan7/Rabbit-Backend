@@ -2,12 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const HabitSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  name: { type: String, required: true },
-  frequency: { type: Number, required: true },
-  duration: { type: Number, required: true },
-  reminderTime: { type: String, required: true },
-  progress: { type: [Date], default: [] }
+  email: { type: String, required: true },
+  challenges: [{
+    name: { type: String, required: true },
+    participants: [{ type:String}],
+    startDate: { type: Date, required: true },
+    endDate: { type: Date, required: true },
+    stakeAmount: { type: Number, required: true },
+    winner: { type: String },
+  // Added email field
+  }]
 });
 
 module.exports = mongoose.model('Habit', HabitSchema);

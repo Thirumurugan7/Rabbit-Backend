@@ -10,4 +10,8 @@ router.post("/check",userController.checKUser)
 
 router.post("/update", userController.updateHabitProgress)
 
+router.post("/create", userController.createHabit)
+router.post("/create-challenge", userController.createChallenge)
+
+
 module.exports = router;

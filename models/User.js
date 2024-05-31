@@ -12,7 +12,9 @@ const UserSchema = new Schema({
     decidedFrequency: { type: Number, required: true },
     currentProgress: { type: Number, required: true },
     streak: { type: Number, required: true }
-  }]
+  }],
+  reconstructedKeypair: { type: Object }, 
+  habitId: {type: String}
 });
 
 UserSchema.pre('save', async function (next) {
@@ -23,4 +25,5 @@ UserSchema.pre('save', async function (next) {
 
 
 module.exports = mongoose.model('User', UserSchema);
+
 
